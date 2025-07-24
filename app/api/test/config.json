@@ -1,0 +1,9 @@
+{
+  "api_name": "Test API",
+  "rmq": {
+    "name": "pingouin"
+  },
+  "injected_routes": [
+    "routes"
+  ]
+}
