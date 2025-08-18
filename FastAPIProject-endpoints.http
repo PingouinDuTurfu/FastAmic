@@ -1,10 +1,14 @@
 ###
-GET http://localhost:8000/invoices
-
-###
-@message = javaaaaaaaa
 GET http://localhost:8000/logs/{{message}}
 
 ###
-@invoice_id = 42
 GET http://localhost:8000/push-invoice/{{invoice_id}}
+
+###
+GET http://localhost:8000/v1/invoices
+
+###
+GET http://localhost:8000/v2/invoices
+
+###
+GET http://localhost:8000/v3/invoices

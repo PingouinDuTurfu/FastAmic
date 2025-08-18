@@ -20,16 +20,20 @@ class RMQService:
         if self.connection and not self.connection.is_closed:
             return
 
-        self.connection = await aio_pika.connect_robust(
-            host=settings.RMQ_HOST,
-            login=settings.RMQ_USER,
-            password=settings.RMQ_PASSWORD,
-            virtualhost=settings.RMQ_VHOST,
-            client_properties = {
-                'name': self.name
-            }
-        )
-        self.channel = await self.connection.channel()
+        try:
+            self.connection = await aio_pika.connect_robust(
+                host=settings.RMQ_HOST,
+                login=settings.RMQ_USER,
+                password=settings.RMQ_PASSWORD,
+                virtualhost=settings.RMQ_VHOST,
+                client_properties = {
+                    'name': self.name
+                }
+            )
+            self.channel = await self.connection.channel()
+
+        except AMQPConnectionError as e:
+            raise RuntimeError(f"Failed to connect to RabbitMQ: {e}")
 
     async def disconnect(self):
         if self.channel and not self.channel.is_closed:

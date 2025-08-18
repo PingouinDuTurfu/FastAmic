@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
 ENV_FILE = ".env"
@@ -27,5 +29,10 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ENV_FILE
+
+env_file = Path(ENV_FILE)
+
+if not env_file.is_file():
+    raise FileNotFoundError(f".env file not found at {env_file.resolve()}")
 
 settings = Settings()

@@ -1,5 +1,17 @@
 version: '3'
 services:
+  mysql:
+    image: mysql:8
+    hostname: sql-01
+    container_name: sql-01
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
   rmq:
     build: ./rmq
     image: fastamic_rmq

@@ -15,15 +15,18 @@ class MySQLService:
         if self.pool:
             await self.disconnect()
 
-        self.pool = await aiomysql.create_pool(
-            host=settings.MYSQL_HOST,
-            user=settings.MYSQL_USER,
-            password=settings.MYSQL_PASSWORD,
-            db=settings.MYSQL_DATABASE_MAIN,
-            minsize=settings.MYSQL_POOL_SIZE_MIN,
-            maxsize=settings.MYSQL_POOL_SIZE_MAX,
-            port=settings.MYSQL_PORT
-        )
+        try:
+            self.pool = await aiomysql.create_pool(
+                host=settings.MYSQL_HOST,
+                user=settings.MYSQL_USER,
+                password=settings.MYSQL_PASSWORD,
+                db=settings.MYSQL_DATABASE_MAIN,
+                minsize=settings.MYSQL_POOL_SIZE_MIN,
+                maxsize=settings.MYSQL_POOL_SIZE_MAX,
+                port=settings.MYSQL_PORT
+            )
+        except (OperationalError, InterfaceError) as e:
+            raise RuntimeError(f"Failed to connect to MySQL: {e}")
 
     async def disconnect(self):
         if self.pool:
