@@ -1,9 +1,8 @@
-import asyncio
 import json
 from typing import Union
 
 import aio_pika
-from aiormq import AMQPConnectionError, ChannelClosed
+from aiormq import AMQPConnectionError
 
 from app.core.env_config import settings
 
@@ -14,7 +13,6 @@ class RMQService:
         self.channel = None
         self.exchange = None
         self.name = name
-        self.lock = asyncio.Lock()
 
     async def connect(self):
         if self.connection and not self.connection.is_closed:
@@ -64,18 +62,5 @@ class RMQService:
                 routing_key=queue
             )
 
-        except (AMQPConnectionError, ChannelClosed):
-            async with self.lock:
-                try:
-                    await self.connect()
-
-                    await self.channel.default_exchange.publish(
-                        aio_pika.Message(
-                            body=body,
-                            content_type=content_type
-                        ),
-                        routing_key=queue
-                    )
-
-                except Exception as e:
-                    raise RuntimeError(f"Failed to publish to RMQ after reconnect: {e}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to publish to RMQ: {e}")
