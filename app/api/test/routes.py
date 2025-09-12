@@ -6,6 +6,7 @@ from app.services.core.log_service import LogService
 from app.services.core.mysql_service import MySQLService
 from app.services.core.rmq_service import RMQService
 from app.services.invoice_service import InvoiceService
+from app.services.invoice_service_2 import InvoiceService2
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ async def list_v2_invoices():
 @router.get("/v3/invoices")
 @inject
 async def list_v3_invoices(
-        invoice_service: InvoiceService = Depends(Provide[ServiceDIContainer.invoice_service])
+        invoice_service: InvoiceService2 = Depends(Provide[ServiceDIContainer.invoice_service])
 ):
     return await invoice_service.get_invoices()
 
